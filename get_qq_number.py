@@ -1,6 +1,6 @@
 import requests
 
-url = "http://s.web2.qq.com/api/get_friend_uin2?tuid=\#{uin}&type=1&vfwebqq=\#{vfwebqq}&t=0.1"
+url = "http://s.web2.qq.com/api/get_friend_uin2?tuid=\#{uin}&type=1&vfwebqq=d8c509ea0fe955cd3fd18284137afc370d089fa05f13472ee6d53fb6658f330744a3f9bef59aefe7&t=0.1"
 headers = {
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',

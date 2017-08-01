@@ -1,6 +1,6 @@
 import requests
 
-url = "http://cgi.connect.qq.com/qqconnectopen/openapi/get_user_friends?t=1501408926924"
+url = "http://cgi.connect.qq.com/qqconnectopen/openapi/get_user_friends?t=150160210484"
 headers = {
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
