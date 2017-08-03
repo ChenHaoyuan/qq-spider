@@ -3,18 +3,13 @@ import time
 import requests
 import json
 
-
 class LoginSession(object):
-    __session = None
+    session = None
     information = {"domain": "w.qq.com"}
 
-    def __new__(cls, *args, **kwargs):
-        if LoginSession.__session is None:
-            LoginSession.__session = object.__new__(cls)
-        return cls.__session
-            
     def __init__(self):
-        self.__session = self.__create_session()
+        if LoginSession.session is None:
+            LoginSession.session = self.__create_session()
     
     def __create_session(self):
         session = requests.Session()
@@ -81,10 +76,3 @@ class LoginSession(object):
             e = e + (e << 5) + ord(t[i])
             i = i + 1
         return str(2147483647 & e) 
-
-
-if __name__ == '__main__':
-    a = LoginSession()
-    b = LoginSession()
-    print(a.information)
-    print(b.information)
