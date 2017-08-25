@@ -3,6 +3,7 @@ import time
 import requests
 import json
 
+
 class LoginSession(object):
     session = None
     information = {"domain": "w.qq.com"}
@@ -10,7 +11,7 @@ class LoginSession(object):
     def __init__(self):
         if LoginSession.session is None:
             LoginSession.session = self.__create_session()
-    
+
     def __create_session(self):
         session = requests.Session()
         session.headers.update(
@@ -34,7 +35,8 @@ class LoginSession(object):
         login_state = False
         while login_state == False:  # start polling
             time.sleep(2)
-            polling_response = session.get(polling_url, headers=polling_headers)
+            polling_response = session.get(
+                polling_url, headers=polling_headers)
             polling_response_result = polling_response.text.split("'")[9]
             print(polling_response_result)
             if polling_response_result == '登录成功！':
@@ -48,7 +50,7 @@ class LoginSession(object):
             if 'ptwebqq' in cookie:
                 ptwebqq = cookie.split('=')[1].lstrip()
                 self.information["ptwebqq"] = ptwebqq
-                print("ptwebqq is:", ptwebqq)
+                print("ptwebqq is:%s" % ptwebqq)
 
         set_cookie_headers = {
             'referer': 'http://w.qq.com/proxy.html?login2qq=1&webqq_type=10'
@@ -58,16 +60,29 @@ class LoginSession(object):
 
         vfwebqq_url = 'http://s.web2.qq.com/api/getvfwebqq?ptwebqq=' + \
             ptwebqq + '&clientid=53999199&psessionid=&t=1501514974040'
-        vfwebqq_header = {
+        vfwebqq_headers = {
             'Referer': 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1'
         }
-        vfwebqq_response = session.get(vfwebqq_url, headers=vfwebqq_header)
+        vfwebqq_response = session.get(vfwebqq_url, headers=vfwebqq_headers)
         vfwebqq_json = json.loads(vfwebqq_response.text)
         vfwebqq = vfwebqq_json["result"]["vfwebqq"]
         self.information["vfwebqq"] = vfwebqq
-        print("vfwebqq is :%s" %(vfwebqq))
-        return session
+        print("vfwebqq is:%s" % (vfwebqq))
 
+        psessionid_url = "http://d1.web2.qq.com/channel/login2"
+        psessionid_headers = {
+            'Origin': 'http://d1.web2.qq.com',
+            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
+        }
+        psessionid_post_data = 'r={"ptwebqq":"' + ptwebqq + \
+            '","clientid":53999199,"psessionid":"","status":"online"}'
+        psessionid_response = session.post(psessionid_url, data=psessionid_post_data, headers=psessionid_headers).text
+        psessionid_json = json.loads(psessionid_response)
+        psessionid = psessionid_json["result"]["psessionid"]
+        print("psessionid is:%s" % (psessionid))
+        self.information["psessionid"] = psessionid 
+        return session
+    
     def __translate_qrsig_to_ptqrtoken(self, t):
         e = 0
         i = 0
@@ -75,4 +90,4 @@ class LoginSession(object):
         while n > i:
             e = e + (e << 5) + ord(t[i])
             i = i + 1
-        return str(2147483647 & e) 
+        return str(2147483647 & e)
